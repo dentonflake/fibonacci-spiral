@@ -10,6 +10,16 @@ new p5((p) => {
   let zoom = 1
   let animate = false
 
+  // Validate the number of shapes before updating the sketch
+  const setIterations = (value) => {
+
+    if (!Number.isInteger(value) || value < 1 || value > 25) {
+      throw new RangeError('Iterations must be an integer between 1 and 25.')
+    }
+
+    iterations = value
+  }
+
   // Helper to draw the fibonacci
   const fibonacci = (previous, current, remaining, type) => {
 
@@ -145,15 +155,16 @@ new p5((p) => {
     }
 
     // Adjust the number of shapes
-    if (key === 'arrowup') {
-      iterations = Math.min(iterations + 1, 25)
-      console.log('Iterations:', iterations)
-      return false
-    }
+    if (key === 'arrowup' || key === 'arrowdown') {
 
-    if (key === 'arrowdown') {
-      iterations = Math.max(iterations - 1, 1)
-      console.log('Iterations:', iterations)
+      try {
+        const change = key === 'arrowup' ? 1 : -1
+        setIterations(iterations + change)
+        console.log('Iterations:', iterations)
+      } catch (error) {
+        console.warn(error.message)
+      }
+      
       return false
     }
 
